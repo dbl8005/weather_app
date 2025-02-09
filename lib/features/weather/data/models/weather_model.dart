@@ -9,6 +9,11 @@ class WeatherModel extends WeatherEntity {
     required String iconCode,
     required double windSpeed,
     required String cityName,
+    required int pressure,
+    required double uvi,
+    required int clouds,
+    required int visibility,
+    required double dewPoint,
   }) : super(
           temperature: temperature,
           feelsLike: feelsLike,
@@ -17,6 +22,11 @@ class WeatherModel extends WeatherEntity {
           iconCode: iconCode,
           windSpeed: windSpeed,
           cityName: cityName,
+          pressure: pressure,
+          uvi: uvi,
+          clouds: clouds,
+          visibility: visibility,
+          dewPoint: dewPoint,
         );
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
@@ -31,6 +41,11 @@ class WeatherModel extends WeatherEntity {
       iconCode: weather['icon'],
       windSpeed: current['wind_speed'].toDouble(),
       cityName: json['timezone'].split('/').last,
+      pressure: current['pressure'],
+      uvi: current['uvi'],
+      clouds: current['clouds'],
+      visibility: current['visibility'],
+      dewPoint: current['dew_point'].toDouble(),
     );
   }
 }
