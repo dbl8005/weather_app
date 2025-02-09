@@ -1,3 +1,4 @@
+import 'package:weather_app/features/weather/domain/entities/hourly_weather_entity.dart';
 import 'package:weather_app/features/weather/domain/entities/weather_entity.dart';
 
 class WeatherModel extends WeatherEntity {
@@ -14,6 +15,7 @@ class WeatherModel extends WeatherEntity {
     required int clouds,
     required int visibility,
     required double dewPoint,
+    required List<HourlyWeatherEntity> hourlyWeather,
   }) : super(
           temperature: temperature,
           feelsLike: feelsLike,
@@ -27,25 +29,38 @@ class WeatherModel extends WeatherEntity {
           clouds: clouds,
           visibility: visibility,
           dewPoint: dewPoint,
+          hourlyWeather: hourlyWeather,
         );
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
     final current = json['current'];
     final weather = current['weather'][0];
 
+    final List<HourlyWeatherEntity> hourly = (json['hourly'] as List)
+        .take(24)
+        .map(
+          (hourly) => HourlyWeatherEntity(
+            timestamp: hourly['dt'],
+            temperature: (hourly['temp'] as num).toDouble(),
+            iconCode: hourly['weather'][0]['icon'],
+          ),
+        )
+        .toList();
+
     return WeatherModel(
-      temperature: current['temp'].toDouble(),
-      feelsLike: current['feels_like'].toDouble(),
+      temperature: (current['temp'] as num).toDouble(),
+      feelsLike: (current['feels_like'] as num).toDouble(),
       humidity: current['humidity'],
       description: weather['description'],
       iconCode: weather['icon'],
-      windSpeed: current['wind_speed'].toDouble(),
+      windSpeed: (current['wind_speed'] as num).toDouble(),
       cityName: json['timezone'].split('/').last,
       pressure: current['pressure'],
-      uvi: current['uvi'],
+      uvi: (current['uvi'] as num).toDouble(),
       clouds: current['clouds'],
       visibility: current['visibility'],
-      dewPoint: current['dew_point'].toDouble(),
+      dewPoint: (current['dew_point'] as num).toDouble(),
+      hourlyWeather: hourly,
     );
   }
 }
