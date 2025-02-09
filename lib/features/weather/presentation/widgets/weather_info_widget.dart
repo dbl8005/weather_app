@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/core/utils/weather/weather_utils.dart';
+import 'package:weather_app/features/weather/presentation/widgets/hourly_weather_card.dart';
 import '../../domain/entities/weather_entity.dart';
 
 class WeatherInfoWidget extends StatelessWidget {
@@ -25,6 +26,8 @@ class WeatherInfoWidget extends StatelessWidget {
             _buildPrimaryDetails(context),
             const SizedBox(height: 20),
             _buildSecondaryDetails(context),
+            const SizedBox(height: 20),
+            _buildHourlyWeather(context),
             const SizedBox(height: 20),
           ],
         ),
@@ -179,6 +182,22 @@ class WeatherInfoWidget extends StatelessWidget {
                 ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHourlyWeather(BuildContext context) {
+    return Container(
+      height: 100,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: weather.hourlyWeather.length,
+        itemBuilder: (context, index) {
+          return HourlyWeatherCard(
+            weather: weather.hourlyWeather[index],
+            isNow: index == 0,
+          );
+        },
       ),
     );
   }

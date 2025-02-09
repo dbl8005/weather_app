@@ -17,7 +17,7 @@ class WeatherRepositoryImpl implements WeatherRepository {
 
     final response = await http.get(
       Uri.parse(
-        '$baseUrl/onecall?lat=$lat&lon=$lon&appid=$apiKey&units=metric&exclude=minutely,hourly,daily,alerts',
+        '$baseUrl/onecall?lat=$lat&lon=$lon&appid=$apiKey&units=metric&exclude=minutely,daily,alerts',
       ),
     );
 
