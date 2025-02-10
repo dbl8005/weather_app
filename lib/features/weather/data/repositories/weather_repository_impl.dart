@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 import 'package:weather_app/core/constants/secrets.dart';
 import 'package:weather_app/core/errors/weather_exception.dart';
 import 'package:weather_app/features/weather/data/models/weather_model.dart';
@@ -13,43 +14,35 @@ class WeatherRepositoryImpl implements WeatherRepository {
 
   @override
   Future<WeatherEntity> getCurrentWeather() async {
-    const lat = 51.5074;
-    const lon = -0.1278;
+    // Default coordinates (London)
+    return getWeatherByLocation(51.5074, -0.1278);
+  }
 
+  @override
+  Future<WeatherEntity> getWeatherByLocation(double lat, double lon) async {
     try {
-      final response = await http
-          .get(
-            Uri.parse(
-              '$baseUrl/onecall?lat=$lat&lon=$lon&appid=$apiKey&units=metric&exclude=minutely,alerts',
-            ),
-          )
-          .timeout(
-            const Duration(seconds: 10),
-            onTimeout: () =>
-                throw WeatherException(message: 'Request timed out'),
-          );
+      final response = await http.get(
+        Uri.parse(
+          '$baseUrl/onecall?lat=$lat&lon=$lon&appid=$apiKey&units=metric&exclude=minutely,alerts',
+        ),
+      );
 
       if (response.statusCode == 200) {
-        try {
-          final data = json.decode(response.body);
-          return WeatherModel.fromJson(data);
-        } catch (e) {
-          throw WeatherException(
-              message: 'Failed to parse response', originalError: e);
-        }
-      } else if (response.statusCode == 401) {
-        throw WeatherException(
-            message: 'Invalid API key', code: 'INVALID_API_KEY');
+        final data = json.decode(response.body);
+        return WeatherModel.fromJson(data);
       } else {
         throw WeatherException(
           message: 'Failed to load weather data',
           code: 'HTTP_${response.statusCode}',
         );
       }
-    } on WeatherException {
-      rethrow;
     } catch (e) {
-      throw WeatherException(message: 'Network error', originalError: e);
+      if (e is WeatherException) rethrow;
+      throw WeatherException(
+        message: 'Network error',
+        code: 'NETWORK_ERROR',
+        originalError: e,
+      );
     }
   }
 
