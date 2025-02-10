@@ -1,5 +1,3 @@
-import 'package:weather_app/features/weather/domain/entities/hourly_weather_entity.dart';
-
 class DailyWeatherEntity {
   final int timestamp;
   final int sunrise;
@@ -14,12 +12,10 @@ class DailyWeatherEntity {
   final int humidity;
   final double windSpeed;
   final double clouds;
-  final double visibility;
   final double dewPoint;
   final double uvi;
   final double rainProbability;
   final double snowProbability;
-  final List<HourlyWeatherEntity> hourlyWeather;
   final String iconCode;
 
   DailyWeatherEntity({
@@ -36,12 +32,10 @@ class DailyWeatherEntity {
     required this.humidity,
     required this.windSpeed,
     required this.clouds,
-    required this.visibility,
     required this.dewPoint,
     required this.uvi,
     required this.rainProbability,
     required this.snowProbability,
-    required this.hourlyWeather,
     required this.iconCode,
   });
 }

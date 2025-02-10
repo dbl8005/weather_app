@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/core/utils/weather/weather_utils.dart';
+import 'package:weather_app/features/weather/presentation/pages/daily_forecast_page.dart';
 import 'package:weather_app/features/weather/presentation/widgets/hourly_weather_card.dart';
 import '../../domain/entities/weather_entity.dart';
 
