@@ -11,21 +11,24 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   final weatherRepository = WeatherRepositoryImpl();
   LocationData? lastLocation;
   WeatherEntity? lastWeather;
+  bool useCurrentLocation = true;
 
   WeatherBloc() : super(WeatherInitial()) {
     on<GetWeather>(
       (event, emit) async {
         emit(WeatherLoading());
         try {
-          final location = await _getCurrentLocation();
-          if (location != null) {
-            lastLocation = location;
-            final weather = await weatherRepository.getWeatherByLocation(
-              location.latitude!,
-              location.longitude!,
-            );
-            lastWeather = weather;
-            emit(WeatherLoaded(weather));
+          if (useCurrentLocation) {
+            final location = await _getCurrentLocation();
+            if (location != null) {
+              lastLocation = location;
+              final weather = await weatherRepository.getWeatherByLocation(
+                location.latitude!,
+                location.longitude!,
+              );
+              lastWeather = weather;
+              emit(WeatherLoaded(weather));
+            }
           } else {
             // Fallback to default location if permission denied or location unavailable
             final weather = await weatherRepository.getCurrentWeather();
@@ -44,6 +47,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       (event, emit) async {
         emit(WeatherLoading());
         try {
+          useCurrentLocation = false;
           final weather = await weatherRepository.getWeatherByLocation(
             event.latitude,
             event.longitude,
