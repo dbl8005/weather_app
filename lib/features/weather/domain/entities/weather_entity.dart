@@ -1,3 +1,4 @@
+import 'package:weather_app/features/weather/domain/entities/daily_weather_entity.dart';
 import 'package:weather_app/features/weather/domain/entities/hourly_weather_entity.dart';
 
 class WeatherEntity {
@@ -14,6 +15,7 @@ class WeatherEntity {
   final int visibility;
   final double dewPoint;
   final List<HourlyWeatherEntity> hourlyWeather;
+  final List<DailyWeatherEntity> dailyWeather;
 
   WeatherEntity({
     required this.temperature,
@@ -29,5 +31,6 @@ class WeatherEntity {
     required this.visibility,
     required this.dewPoint,
     required this.hourlyWeather,
+    required this.dailyWeather,
   });
 }
