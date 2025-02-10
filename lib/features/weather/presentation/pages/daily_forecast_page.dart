@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/core/utils/weather/weather_utils.dart';
-import 'package:weather_app/features/weather/presentation/bloc/weather_bloc.dart';
 import '../../domain/entities/daily_weather_entity.dart';
 import '../widgets/daily_weather_card.dart';
 

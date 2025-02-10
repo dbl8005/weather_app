@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:location/location.dart';
 import 'package:weather_app/core/constants/secrets.dart';
 import 'package:weather_app/core/errors/weather_exception.dart';
 import 'package:weather_app/features/weather/data/models/weather_model.dart';

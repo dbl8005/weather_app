@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:weather_app/core/utils/extensions/context_extensions.dart';
+import 'package:weather_app/features/search/presentation/widgets/cities_search_delegate.dart';
 import 'package:weather_app/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:weather_app/features/weather/presentation/pages/daily_forecast_page.dart';
 import 'package:weather_app/features/weather/presentation/pages/current_weather_page.dart';
@@ -26,9 +27,27 @@ class _MainPageState extends State<MainPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    await showSearch(
+                      context: context,
+                      delegate: CitiesSearchDelegate(),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.search_outlined,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
               backgroundColor: Colors.transparent,
               title: Text(
-                _selectedIndex == 0 ? 'Current Weather' : '7 Days Forecast',
+                switch (_selectedIndex) {
+                  0 => 'Current Weather',
+                  1 => '7 Days Forecast',
+                  _ => 'Weather App',
+                },
                 style: TextStyle(
                   color: context.theme.colorScheme.surface,
                 ),
