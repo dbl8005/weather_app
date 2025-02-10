@@ -20,19 +20,36 @@ class WeatherRepositoryImpl implements WeatherRepository {
   @override
   Future<WeatherEntity> getWeatherByLocation(double lat, double lon) async {
     try {
-      final response = await http.get(
+      // Get weather data
+      final weatherResponse = await http.get(
         Uri.parse(
           '$baseUrl/onecall?lat=$lat&lon=$lon&appid=$apiKey&units=metric&exclude=minutely,alerts',
         ),
       );
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return WeatherModel.fromJson(data);
+      if (weatherResponse.statusCode == 200) {
+        // Get city name from reverse geocoding
+        final geoResponse = await http.get(
+          Uri.parse(
+            'http://api.openweathermap.org/geo/1.0/reverse?lat=$lat&lon=$lon&limit=1&appid=$apiKey',
+          ),
+        );
+
+        if (geoResponse.statusCode == 200) {
+          final List geoData = json.decode(geoResponse.body);
+          final cityName = geoData.isNotEmpty ? geoData[0]['name'] : 'Unknown';
+
+          final weatherData = json.decode(weatherResponse.body);
+          return WeatherModel.fromJson(weatherData, cityName: cityName);
+        }
+
+        // Fallback to just weather data if geocoding fails
+        final weatherData = json.decode(weatherResponse.body);
+        return WeatherModel.fromJson(weatherData);
       } else {
         throw WeatherException(
           message: 'Failed to load weather data',
-          code: 'HTTP_${response.statusCode}',
+          code: 'HTTP_${weatherResponse.statusCode}',
         );
       }
     } catch (e) {

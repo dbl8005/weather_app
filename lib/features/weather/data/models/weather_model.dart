@@ -37,72 +37,48 @@ class WeatherModel extends WeatherEntity {
           dailyWeather: dailyWeather,
         );
 
-  factory WeatherModel.fromJson(Map<String, dynamic> json) {
+  factory WeatherModel.fromJson(Map<String, dynamic> json, {String? cityName}) {
     try {
-      final current = json['current'] as Map<String, dynamic>?;
-      if (current == null) {
-        throw WeatherException(message: 'Current weather data is missing');
-      }
-      final weather =
-          (current['weather'] as List?)?.firstOrNull as Map<String, dynamic>?;
-      if (weather == null) {
-        throw WeatherException(message: 'Weather data is missing');
-      }
-
-      String cityName = ParseUtils.asString(json['timezone']).split('/').last;
-      cityName = cityName.replaceAll('_', ' ');
-
-      final List<HourlyWeatherEntity> hourly = [];
-
-      try {
-        hourly.addAll(
-          (json['hourly'] as List? ?? []).take(24).map(
-                (hourly) => HourlyWeatherEntity(
-                  timestamp: ParseUtils.toInt(hourly['dt']),
-                  temperature: ParseUtils.toDouble(hourly['temp']),
-                  iconCode: ParseUtils.asString(
-                    hourly['weather'][0]['icon'],
-                    defaultValue: '01d',
-                  ),
+      final current = json['current'];
+      final weather = current['weather'][0];
+      final hourly = (json['hourly'] as List)
+          .take(24)
+          .map((e) => HourlyWeatherEntity(
+                timestamp: ParseUtils.toInt(e['dt']),
+                temperature: ParseUtils.toDouble(e['temp']),
+                iconCode: ParseUtils.asString(
+                  e['weather'][0]['icon'],
+                  defaultValue: '01d',
                 ),
-              ),
-        );
-      } catch (e) {
-        print('Error parsing hourly weather: $e');
-      }
-
-      final List<DailyWeatherEntity> daily = [];
-      try {
-        daily.addAll(((json['daily'] as List?) ?? [])
-            .take(7)
-            .map((daily) => DailyWeatherEntity(
-                  timestamp: ParseUtils.toInt(daily['dt']),
-                  sunrise: ParseUtils.toInt(daily['sunrise']),
-                  sunset: ParseUtils.toInt(daily['sunset']),
-                  moonrise: ParseUtils.toInt(daily['moonrise']),
-                  moonset: ParseUtils.toInt(daily['moonset']),
-                  moonPhase: ParseUtils.toDouble(daily['moon_phase']),
-                  summary: ParseUtils.asString(daily['summary']),
-                  temperature: ParseUtils.toDoubleMap(
-                      daily['temp'] as Map<String, dynamic>?),
-                  feelsLike: ParseUtils.toDoubleMap(
-                      daily['feels_like'] as Map<String, dynamic>?),
-                  pressure: ParseUtils.toInt(daily['pressure']),
-                  humidity: ParseUtils.toInt(daily['humidity']),
-                  windSpeed: ParseUtils.toDouble(daily['wind_speed']),
-                  clouds: ParseUtils.toDouble(daily['clouds']),
-                  dewPoint: ParseUtils.toDouble(daily['dew_point']),
-                  uvi: ParseUtils.toDouble(daily['uvi']),
-                  rainProbability: ParseUtils.toDouble(daily['pop']),
-                  snowProbability: ParseUtils.toDouble(daily['snow']),
-                  iconCode: ParseUtils.asString(
-                    daily['weather']?[0]?['icon'],
-                    defaultValue: '01d',
-                  ),
-                )));
-      } catch (e) {
-        print('Error parsing daily weather: $e');
-      }
+              ))
+          .toList();
+      final daily = (json['daily'] as List)
+          .map((e) => DailyWeatherEntity(
+                timestamp: ParseUtils.toInt(e['dt']),
+                sunrise: ParseUtils.toInt(e['sunrise']),
+                sunset: ParseUtils.toInt(e['sunset']),
+                moonrise: ParseUtils.toInt(e['moonrise']),
+                moonset: ParseUtils.toInt(e['moonset']),
+                moonPhase: ParseUtils.toDouble(e['moon_phase']),
+                summary: ParseUtils.asString(e['summary']),
+                temperature:
+                    ParseUtils.toDoubleMap(e['temp'] as Map<String, dynamic>?),
+                feelsLike: ParseUtils.toDoubleMap(
+                    e['feels_like'] as Map<String, dynamic>?),
+                pressure: ParseUtils.toInt(e['pressure']),
+                humidity: ParseUtils.toInt(e['humidity']),
+                windSpeed: ParseUtils.toDouble(e['wind_speed']),
+                clouds: ParseUtils.toDouble(e['clouds']),
+                dewPoint: ParseUtils.toDouble(e['dew_point']),
+                uvi: ParseUtils.toDouble(e['uvi']),
+                rainProbability: ParseUtils.toDouble(e['pop']),
+                snowProbability: ParseUtils.toDouble(e['snow']),
+                iconCode: ParseUtils.asString(
+                  e['weather'][0]?['icon'],
+                  defaultValue: '01d',
+                ),
+              ))
+          .toList();
 
       return WeatherModel(
         temperature: ParseUtils.toDouble(current['temp']),
@@ -111,7 +87,7 @@ class WeatherModel extends WeatherEntity {
         description: ParseUtils.asString(weather['description']),
         iconCode: ParseUtils.asString(weather['icon'], defaultValue: '01d'),
         windSpeed: ParseUtils.toDouble(current['wind_speed']),
-        cityName: cityName,
+        cityName: cityName ?? 'Unknown',
         pressure: ParseUtils.toInt(current['pressure']),
         uvi: ParseUtils.toDouble(current['uvi']),
         clouds: ParseUtils.toInt(current['clouds']),
