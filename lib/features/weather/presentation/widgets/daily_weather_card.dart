@@ -20,7 +20,7 @@ class DailyWeatherCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(isToday ? 0.2 : 0.1),
+        color: Colors.white.withOpacity(isToday ? 0.4 : 0.2),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
@@ -69,15 +69,18 @@ class DailyWeatherCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.water_drop,
-                  color: Colors.blue[200],
-                  size: 16,
+                Opacity(
+                  opacity: weather.rainProbability,
+                  child: Icon(
+                    Icons.water_drop,
+                    color: Colors.blue[600],
+                    size: 16,
+                  ),
                 ),
                 Text(
                   '${(weather.rainProbability * 100).round()}%',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.blue[200],
+                        color: Colors.blue[600],
                       ),
                 ),
               ],
