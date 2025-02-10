@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:weather_app/core/constants/secrets.dart';
+import 'package:weather_app/core/errors/weather_exception.dart';
 import 'package:weather_app/features/weather/data/models/weather_model.dart';
 import 'package:weather_app/features/weather/domain/entities/weather_entity.dart';
 import 'package:weather_app/features/weather/domain/repositories/weather_repository.dart';
@@ -12,20 +13,52 @@ class WeatherRepositoryImpl implements WeatherRepository {
 
   @override
   Future<WeatherEntity> getCurrentWeather() async {
-    const lat = 51.5074;
-    const lon = -0.1278;
+    // Default coordinates (London)
+    return getWeatherByLocation(51.5074, -0.1278);
+  }
 
-    final response = await http.get(
-      Uri.parse(
-        '$baseUrl/onecall?lat=$lat&lon=$lon&appid=$apiKey&units=metric&exclude=minutely,hourly,daily,alerts',
-      ),
-    );
+  @override
+  Future<WeatherEntity> getWeatherByLocation(double lat, double lon) async {
+    try {
+      // Get weather data
+      final weatherResponse = await http.get(
+        Uri.parse(
+          '$baseUrl/onecall?lat=$lat&lon=$lon&appid=$apiKey&units=metric&exclude=minutely,alerts',
+        ),
+      );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return WeatherModel.fromJson(data);
-    } else {
-      throw Exception('Failed to load weather data');
+      if (weatherResponse.statusCode == 200) {
+        // Get city name from reverse geocoding
+        final geoResponse = await http.get(
+          Uri.parse(
+            'http://api.openweathermap.org/geo/1.0/reverse?lat=$lat&lon=$lon&limit=1&appid=$apiKey',
+          ),
+        );
+
+        if (geoResponse.statusCode == 200) {
+          final List geoData = json.decode(geoResponse.body);
+          final cityName = geoData.isNotEmpty ? geoData[0]['name'] : 'Unknown';
+
+          final weatherData = json.decode(weatherResponse.body);
+          return WeatherModel.fromJson(weatherData, cityName: cityName);
+        }
+
+        // Fallback to just weather data if geocoding fails
+        final weatherData = json.decode(weatherResponse.body);
+        return WeatherModel.fromJson(weatherData);
+      } else {
+        throw WeatherException(
+          message: 'Failed to load weather data',
+          code: 'HTTP_${weatherResponse.statusCode}',
+        );
+      }
+    } catch (e) {
+      if (e is WeatherException) rethrow;
+      throw WeatherException(
+        message: 'Network error',
+        code: 'NETWORK_ERROR',
+        originalError: e,
+      );
     }
   }
 

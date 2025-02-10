@@ -1,3 +1,6 @@
+import 'package:weather_app/features/weather/domain/entities/daily_weather_entity.dart';
+import 'package:weather_app/features/weather/domain/entities/hourly_weather_entity.dart';
+
 class WeatherEntity {
   final double temperature;
   final double feelsLike;
@@ -6,6 +9,13 @@ class WeatherEntity {
   final String iconCode;
   final double windSpeed;
   final String cityName;
+  final int pressure;
+  final double uvi;
+  final int clouds;
+  final int visibility;
+  final double dewPoint;
+  final List<HourlyWeatherEntity> hourlyWeather;
+  final List<DailyWeatherEntity> dailyWeather;
 
   WeatherEntity({
     required this.temperature,
@@ -15,5 +25,12 @@ class WeatherEntity {
     required this.iconCode,
     required this.windSpeed,
     required this.cityName,
+    required this.pressure,
+    required this.uvi,
+    required this.clouds,
+    required this.visibility,
+    required this.dewPoint,
+    required this.hourlyWeather,
+    required this.dailyWeather,
   });
 }
