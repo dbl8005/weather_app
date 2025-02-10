@@ -49,6 +49,9 @@ class WeatherModel extends WeatherEntity {
         throw WeatherException(message: 'Weather data is missing');
       }
 
+      String cityName = ParseUtils.asString(json['timezone']).split('/').last;
+      cityName = cityName.replaceAll('_', ' ');
+
       final List<HourlyWeatherEntity> hourly = [];
 
       try {
@@ -108,7 +111,7 @@ class WeatherModel extends WeatherEntity {
         description: ParseUtils.asString(weather['description']),
         iconCode: ParseUtils.asString(weather['icon'], defaultValue: '01d'),
         windSpeed: ParseUtils.toDouble(current['wind_speed']),
-        cityName: ParseUtils.asString(json['timezone']).split('/').last,
+        cityName: cityName,
         pressure: ParseUtils.toInt(current['pressure']),
         uvi: ParseUtils.toDouble(current['uvi']),
         clouds: ParseUtils.toInt(current['clouds']),

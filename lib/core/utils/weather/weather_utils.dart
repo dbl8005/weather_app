@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class WeatherUtils {
   static String getWeatherIcon(String iconCode) {
-    return 'https://openweathermap.org/img/wn/$iconCode@2x.png';
+    return 'https://openweathermap.org/img/wn/$iconCode@4x.png';
   }
 
   static LinearGradient getBackgroundGradient(String iconCode) {
