@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:weather_app/core/utils/extensions/context_extensions.dart';
 import 'package:weather_app/features/search/presentation/widgets/cities_search_delegate.dart';
+import 'package:weather_app/features/settings/presentation/pages/settings_page.dart';
 import 'package:weather_app/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:weather_app/features/weather/presentation/pages/daily_forecast_page.dart';
 import 'package:weather_app/features/weather/presentation/pages/current_weather_page.dart';
@@ -79,6 +80,7 @@ class _MainPageState extends State<MainPage> {
                   switch (_selectedIndex) {
                     0 => 'Current Weather',
                     1 => '7 Days Forecast',
+                    2 => 'Settings',
                     _ => 'Weather App',
                   },
                   style: TextStyle(
@@ -100,6 +102,7 @@ class _MainPageState extends State<MainPage> {
                     const Center(
                       child: CircularProgressIndicator(color: Colors.white),
                     ),
+                  SettingsPage(weatherCode: weatherCode),
                 ],
               ),
               bottomNavigationBar: Container(
@@ -126,6 +129,10 @@ class _MainPageState extends State<MainPage> {
                       GButton(
                         icon: Icons.calendar_today_outlined,
                         text: '7 Days',
+                      ),
+                      GButton(
+                        icon: Icons.settings_outlined,
+                        text: 'Settings',
                       ),
                     ],
                     selectedIndex: _selectedIndex,
