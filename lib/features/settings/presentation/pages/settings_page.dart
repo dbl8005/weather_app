@@ -39,8 +39,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             )),
                         value: state.unit == TemperatureUnit.celsius,
                         onChanged: (value) {
-                          context.read<SettingsBloc>().add(ToggleUnit());
-                          print('Temperature unit toggled to: $value');
+                          final settingsBloc = context.read<SettingsBloc>();
+                          settingsBloc.add(ToggleUnit());
+                          print(
+                              'Temperature unit toggled to: ${settingsBloc.state.unit}');
                         },
                       ),
                       Divider(color: Colors.white.withOpacity(0.1)),
