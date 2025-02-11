@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:units_converter/models/extension_converter.dart';
+import 'package:units_converter/properties/temperature.dart';
 import 'package:weather_app/core/utils/weather/weather_utils.dart';
+import 'package:weather_app/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:weather_app/features/weather/presentation/pages/daily_forecast_page.dart';
 import 'package:weather_app/features/weather/presentation/widgets/hourly_weather_card.dart';
 import '../../domain/entities/weather_entity.dart';
@@ -14,29 +18,41 @@ class WeatherInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: WeatherUtils.getBackgroundGradient(weather.iconCode),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            _buildMainInfo(context),
-            const SizedBox(height: 20),
-            _buildPrimaryDetails(context),
-            const SizedBox(height: 20),
-            _buildSecondaryDetails(context),
-            const SizedBox(height: 20),
-            _buildHourlyWeather(context),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, settingsState) {
+        final isCelsius = settingsState.unit == TemperatureUnit.celsius;
+
+        return Container(
+          decoration: BoxDecoration(
+            gradient: WeatherUtils.getBackgroundGradient(weather.iconCode),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                _buildMainInfo(context, isCelsius),
+                const SizedBox(height: 20),
+                _buildPrimaryDetails(context),
+                const SizedBox(height: 20),
+                _buildSecondaryDetails(context),
+                const SizedBox(height: 20),
+                _buildHourlyWeather(context),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildMainInfo(BuildContext context) {
+  Widget _buildMainInfo(BuildContext context, bool isCelsius) {
+    final String temp = isCelsius
+        ? '${weather.temperature.round()}°C'
+        : '${weather.temperature.convertFromTo(
+              TEMPERATURE.celsius,
+              TEMPERATURE.fahrenheit,
+            )?.toStringAsFixed(1)}°F';
     return Column(
       children: [
         Text(
@@ -52,7 +68,7 @@ class WeatherInfoWidget extends StatelessWidget {
           height: 100,
         ),
         Text(
-          '${weather.temperature.round()}°C',
+          '$temp',
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 color: Colors.white,
               ),

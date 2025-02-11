@@ -41,6 +41,7 @@ dependencies:
   location: ^8.0.0
   shared_preferences: ^2.5.2
   equatable: ^2.0.7
+  units_converter: ^3.0.2
   
 
 dev_dependencies:
