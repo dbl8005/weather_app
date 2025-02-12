@@ -15,6 +15,8 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
+    final isMetric =
+        context.read<SettingsBloc>().state.unit == unitsFormat.metric;
     return WeatherBackgroundWrapper(
       weatherCode: widget.weatherCode,
       child: Padding(
@@ -32,12 +34,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     SwitchListTile(
                       title: Text(
-                        'Use Celsius',
+                        isMetric ? 'Metric Units' : 'Imperial Units',
                         style: context.textTheme.bodyLarge!.copyWith(
                           color: Colors.white,
                         ),
                       ),
-                      value: state.unit == TemperatureUnit.celsius,
+                      value: state.unit == unitsFormat.metric,
                       onChanged: (value) {
                         context.read<SettingsBloc>().add(ToggleUnit());
                       },
@@ -56,7 +58,10 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
-          Text('Version: 1.0.0'),
+          const SizedBox(height: 20),
+          Text('Version: 1.0.0',
+              style:
+                  context.textTheme.bodyMedium!.copyWith(color: Colors.white)),
         ]),
       ),
     );

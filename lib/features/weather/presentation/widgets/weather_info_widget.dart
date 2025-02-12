@@ -21,7 +21,7 @@ class WeatherInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {
-        final isCelsius = state.unit == TemperatureUnit.celsius;
+        final isCelsius = state.unit == unitsFormat.metric;
         return Container(
           decoration: BoxDecoration(
             gradient: WeatherUtils.getBackgroundGradient(weather.iconCode),

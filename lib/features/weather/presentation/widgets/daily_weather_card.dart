@@ -20,7 +20,7 @@ class DailyWeatherCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isCelsius =
-        context.read<SettingsBloc>().state.unit == TemperatureUnit.celsius;
+        context.read<SettingsBloc>().state.unit == unitsFormat.metric;
     print('isCelsius: $isCelsius');
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

@@ -6,7 +6,7 @@ import 'package:weather_app/features/settings/presentation/bloc/settings_bloc.da
 class WeatherConvertors {
   String formatTemperature(double temp, BuildContext context) {
     final bool isCelsius =
-        context.read<SettingsBloc>().state.unit == TemperatureUnit.celsius;
+        context.read<SettingsBloc>().state.unit == unitsFormat.metric;
     if (isCelsius) {
       return '${temp.round()}°C';
     }
@@ -19,7 +19,7 @@ class WeatherConvertors {
 
   String formatDistance(double distance, BuildContext context) {
     final bool isCelsius =
-        context.read<SettingsBloc>().state.unit == TemperatureUnit.celsius;
+        context.read<SettingsBloc>().state.unit == unitsFormat.metric;
     if (isCelsius) {
       return '${(distance.round() / 1000)} km';
     }

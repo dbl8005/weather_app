@@ -1,9 +1,9 @@
 part of 'settings_bloc.dart';
 
-enum TemperatureUnit { celsius, fahrenheit }
+enum unitsFormat { metric, imperial }
 
 class SettingsState extends Equatable {
-  final TemperatureUnit unit;
+  final unitsFormat unit;
 
   const SettingsState(this.unit);
 

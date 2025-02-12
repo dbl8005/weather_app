@@ -7,19 +7,19 @@ part 'settings_event.dart';
 part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  static const String _unitKey = "temperature_unit";
+  static const String _unitKey = "units_format";
 
-  SettingsBloc() : super(const SettingsState(TemperatureUnit.celsius)) {
+  SettingsBloc() : super(const SettingsState(unitsFormat.metric)) {
     _loadSettings(); // Load the unit from storage when bloc starts
 
     on<ToggleUnit>((event, emit) async {
-      final newUnit = state.unit == TemperatureUnit.celsius
-          ? TemperatureUnit.fahrenheit
-          : TemperatureUnit.celsius;
+      final newUnit = state.unit == unitsFormat.metric
+          ? unitsFormat.imperial
+          : unitsFormat.metric;
 
       // Save to shared preferences
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_unitKey, newUnit == TemperatureUnit.fahrenheit);
+      await prefs.setBool(_unitKey, newUnit == unitsFormat.imperial);
 
       emit(SettingsState(newUnit)); // Update UI
     });
@@ -28,9 +28,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   // Load saved unit preference
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    final isFahrenheit = prefs.getBool(_unitKey) ?? false;
-    final unit =
-        isFahrenheit ? TemperatureUnit.fahrenheit : TemperatureUnit.celsius;
+    final isImperial = prefs.getBool(_unitKey) ?? false;
+    final unit = isImperial ? unitsFormat.imperial : unitsFormat.metric;
     emit(SettingsState(unit));
   }
 }
