@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:units_converter/models/extension_converter.dart';
 import 'package:units_converter/properties/temperature.dart';
+import 'package:weather_app/core/utils/weather/weather_convertors.dart';
 import 'package:weather_app/core/utils/weather/weather_utils.dart';
 import 'package:weather_app/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:weather_app/features/weather/presentation/pages/daily_forecast_page.dart';
@@ -19,9 +20,8 @@ class WeatherInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(
-      builder: (context, settingsState) {
-        final isCelsius = settingsState.unit == TemperatureUnit.celsius;
-
+      builder: (context, state) {
+        final isCelsius = state.unit == TemperatureUnit.celsius;
         return Container(
           decoration: BoxDecoration(
             gradient: WeatherUtils.getBackgroundGradient(weather.iconCode),
@@ -30,7 +30,7 @@ class WeatherInfoWidget extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                _buildMainInfo(context, isCelsius),
+                _buildMainInfo(context),
                 const SizedBox(height: 20),
                 _buildPrimaryDetails(context),
                 const SizedBox(height: 20),
@@ -46,13 +46,7 @@ class WeatherInfoWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMainInfo(BuildContext context, bool isCelsius) {
-    final String temp = isCelsius
-        ? '${weather.temperature.round()}°C'
-        : '${weather.temperature.convertFromTo(
-              TEMPERATURE.celsius,
-              TEMPERATURE.fahrenheit,
-            )?.toStringAsFixed(1)}°F';
+  Widget _buildMainInfo(BuildContext context) {
     return Column(
       children: [
         Text(
@@ -68,7 +62,7 @@ class WeatherInfoWidget extends StatelessWidget {
           height: 100,
         ),
         Text(
-          '$temp',
+          WeatherConvertors().formatTemperature(weather.temperature, context),
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 color: Colors.white,
               ),
@@ -97,7 +91,7 @@ class WeatherInfoWidget extends StatelessWidget {
           _buildDetailColumn(
             context,
             'Feels Like',
-            '${weather.feelsLike.round()}°C',
+            WeatherConvertors().formatTemperature(weather.feelsLike, context),
             Icons.thermostat,
           ),
           _buildDetailColumn(
@@ -145,7 +139,8 @@ class WeatherInfoWidget extends StatelessWidget {
               _buildDetailColumn(
                 context,
                 'Visibility',
-                '${(weather.visibility / 1000).toStringAsFixed(1)} km',
+                WeatherConvertors()
+                    .formatDistance(weather.visibility.toDouble(), context),
                 Icons.visibility,
               ),
             ],

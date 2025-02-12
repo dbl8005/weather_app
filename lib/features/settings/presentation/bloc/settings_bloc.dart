@@ -29,6 +29,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final isFahrenheit = prefs.getBool(_unitKey) ?? false;
-    add(ToggleUnit()); // Trigger state update based on stored value
+    final unit =
+        isFahrenheit ? TemperatureUnit.fahrenheit : TemperatureUnit.celsius;
+    emit(SettingsState(unit));
   }
 }

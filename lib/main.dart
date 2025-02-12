@@ -24,12 +24,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      home: MainPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SettingsBloc>(
+          create: (context) => SettingsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => WeatherBloc(
+            settingsBloc: context.read<SettingsBloc>(),
+          ),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        home: MainPage(),
+      ),
     );
   }
 }
