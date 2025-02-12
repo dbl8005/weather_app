@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/core/utils/extensions/context_extensions.dart';
+import 'package:weather_app/core/utils/weather/weather_convertors.dart';
 import 'package:weather_app/core/utils/weather/weather_utils.dart';
+import 'package:weather_app/features/settings/presentation/bloc/settings_bloc.dart';
 import '../../domain/entities/daily_weather_entity.dart';
 
 class DailyWeatherCard extends StatelessWidget {
@@ -16,6 +19,9 @@ class DailyWeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isCelsius =
+        context.read<SettingsBloc>().state.unit == unitsFormat.metric;
+    print('isCelsius: $isCelsius');
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       padding: const EdgeInsets.all(16),
@@ -92,14 +98,15 @@ class DailyWeatherCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '${weather.temperature['min']?.round()}°',
+                '${WeatherConvertors().formatTemperature(weather.temperature['min']!, context)}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Colors.white70,
                     ),
               ),
               const SizedBox(width: 8),
               Text(
-                '${weather.temperature['max']?.round()}°',
+                WeatherConvertors()
+                    .formatTemperature(weather.temperature['max']!, context),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Colors.white,
                     ),

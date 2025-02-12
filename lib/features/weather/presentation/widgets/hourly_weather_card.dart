@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/core/utils/extensions/context_extensions.dart';
+import 'package:weather_app/core/utils/weather/weather_convertors.dart';
 import 'package:weather_app/core/utils/weather/weather_utils.dart';
 import 'package:weather_app/features/weather/domain/entities/hourly_weather_entity.dart';
 
 class HourlyWeatherCard extends StatelessWidget {
   final HourlyWeatherEntity weather;
   final bool isNow;
+
   const HourlyWeatherCard({
     super.key,
     required this.weather,
@@ -41,7 +43,7 @@ class HourlyWeatherCard extends StatelessWidget {
             height: 40,
           ),
           Text(
-            '${weather.temperature.toStringAsFixed(0)}°C',
+            WeatherConvertors().formatTemperature(weather.temperature, context),
             style: context.textTheme.bodyMedium?.copyWith(color: Colors.white),
           ),
         ],

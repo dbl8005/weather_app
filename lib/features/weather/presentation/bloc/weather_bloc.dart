@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location/location.dart';
 import 'package:weather_app/core/errors/weather_exception.dart';
+import 'package:weather_app/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:weather_app/features/weather/data/repositories/weather_repository_impl.dart';
 import 'package:weather_app/features/weather/domain/entities/weather_entity.dart';
 
@@ -8,12 +9,19 @@ part 'weather_event.dart';
 part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
+  final SettingsBloc settingsBloc;
   final weatherRepository = WeatherRepositoryImpl();
   LocationData? lastLocation;
   WeatherEntity? lastWeather;
   bool useCurrentLocation = true;
 
-  WeatherBloc() : super(WeatherInitial()) {
+  WeatherBloc({required this.settingsBloc}) : super(WeatherInitial()) {
+    settingsBloc.stream.listen(
+      (event) {
+        add(GetWeather());
+      },
+    );
+
     on<GetWeather>(
       (event, emit) async {
         emit(WeatherLoading());
