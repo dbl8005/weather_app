@@ -91,7 +91,7 @@ class _MainPageState extends State<MainPage> {
                       _ => 'Weather App',
                     },
                     style: TextStyle(
-                      color: context.theme.colorScheme.surface,
+                      color: Colors.white,
                     ),
                   ),
                   elevation: 0,

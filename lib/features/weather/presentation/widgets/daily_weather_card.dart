@@ -57,6 +57,9 @@ class DailyWeatherCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                   ),
+              softWrap: true,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           // Weather Icon
