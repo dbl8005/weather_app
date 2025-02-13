@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:weather_app/core/utils/extensions/context_extensions.dart';
 
 class AppLoading extends StatelessWidget {
   final String? message;
@@ -16,8 +18,9 @@ class AppLoading extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
-            color: color ?? Theme.of(context).colorScheme.primary,
+          SpinKitCubeGrid(
+            color: context.colorScheme.primary,
+            size: 100,
           ),
           if (message != null) ...[
             const SizedBox(height: 16),
