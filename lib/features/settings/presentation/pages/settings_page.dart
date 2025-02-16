@@ -47,14 +47,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
                     Divider(color: Colors.white.withOpacity(0.1)),
-                    SwitchListTile(
+                    /* SwitchListTile(
                       title: Text('24-Hour Time Format',
                           style: context.textTheme.bodyLarge!.copyWith(
                             color: Colors.white,
                           )),
                       value: false,
                       onChanged: (value) {},
-                    ),
+                    ), */
                   ],
                 );
               },
