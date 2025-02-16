@@ -18,8 +18,8 @@ class AppLoading extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SpinKitCubeGrid(
-            color: context.colorScheme.primary,
+          SpinKitCircle(
+            color: Colors.white,
             size: 100,
           ),
           if (message != null) ...[

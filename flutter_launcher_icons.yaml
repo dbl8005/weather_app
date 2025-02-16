@@ -1,0 +1,23 @@
+flutter_launcher_icons:
+  image_path: "assets/weather/launcher/sunny.png"
+
+  android: "launcher_icon"
+  min_sdk_android: 21
+
+  ios: true
+  remove_alpha_channel_ios: true
+
+  web:
+    generate: true
+    image_path: "assets/weather/launcher/sunny.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+
+  windows:
+    generate: true
+    image_path: "assets/weather/launcher/sunny.png"
+    icon_size: 48
+
+  macos:
+    generate: true
+    image_path: "assets/weather/launcher/sunny.png"
