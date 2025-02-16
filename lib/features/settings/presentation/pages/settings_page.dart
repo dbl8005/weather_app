@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/core/utils/extensions/context_extensions.dart';
 import 'package:weather_app/features/settings/presentation/bloc/settings_bloc.dart';
+import 'package:weather_app/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:weather_app/features/weather/presentation/widgets/weather_background_wrapper.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -42,6 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       value: state.unit == unitsFormat.metric,
                       onChanged: (value) {
                         context.read<SettingsBloc>().add(ToggleUnit());
+                        context.read<WeatherBloc>().add(GetWeather());
                       },
                     ),
                     Divider(color: Colors.white.withOpacity(0.1)),

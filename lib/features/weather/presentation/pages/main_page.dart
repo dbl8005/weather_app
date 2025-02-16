@@ -36,114 +36,119 @@ class _MainPageState extends State<MainPage> {
             weatherCode = state.weather.iconCode;
           }
 
-          return WeatherBackgroundWrapper(
-            weatherCode: weatherCode,
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                actions: [
-                  currentLocation
-                      ? SizedBox.shrink()
-                      : IconButton(
-                          onPressed: () {
-                            context.read<WeatherBloc>()
-                              ..useCurrentLocation = true
-                              ..add(GetWeather());
-                          },
-                          icon: Icon(
-                            Icons.my_location,
-                            color: Colors.white,
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<WeatherBloc>().add(GetWeather());
+            },
+            child: WeatherBackgroundWrapper(
+              weatherCode: weatherCode,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: AppBar(
+                  actions: [
+                    currentLocation
+                        ? SizedBox.shrink()
+                        : IconButton(
+                            onPressed: () {
+                              context.read<WeatherBloc>()
+                                ..useCurrentLocation = true
+                                ..add(GetWeather());
+                            },
+                            icon: Icon(
+                              Icons.my_location,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                  IconButton(
-                    onPressed: () async {
-                      final selectedCity = await showSearch(
-                        context: context,
-                        delegate: CitiesSearchDelegate(),
-                      );
-                      if (selectedCity != null) {
-                        if (context.mounted) {
-                          context.read<WeatherBloc>().add(
-                                GetWeatherByLocation(
-                                  latitude: selectedCity.latitude,
-                                  longitude: selectedCity.longitude,
-                                ),
-                              );
+                    IconButton(
+                      onPressed: () async {
+                        final selectedCity = await showSearch(
+                          context: context,
+                          delegate: CitiesSearchDelegate(),
+                        );
+                        if (selectedCity != null) {
+                          if (context.mounted) {
+                            context.read<WeatherBloc>().add(
+                                  GetWeatherByLocation(
+                                    latitude: selectedCity.latitude,
+                                    longitude: selectedCity.longitude,
+                                  ),
+                                );
+                          }
                         }
-                      }
+                      },
+                      icon: const Icon(
+                        Icons.search_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                  backgroundColor: Colors.transparent,
+                  title: Text(
+                    switch (_selectedIndex) {
+                      0 => 'Current Weather',
+                      1 => '7 Days Forecast',
+                      2 => 'Settings',
+                      _ => 'Weather App',
                     },
-                    icon: const Icon(
-                      Icons.search_outlined,
+                    style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                ],
-                backgroundColor: Colors.transparent,
-                title: Text(
-                  switch (_selectedIndex) {
-                    0 => 'Current Weather',
-                    1 => '7 Days Forecast',
-                    2 => 'Settings',
-                    _ => 'Weather App',
-                  },
-                  style: TextStyle(
-                    color: context.theme.colorScheme.surface,
+                  elevation: 0,
+                ),
+                body: IndexedStack(
+                  index: _selectedIndex,
+                  children: [
+                    CurrentWeatherPage(),
+                    if (state is WeatherLoaded)
+                      DailyForecastPage(
+                        dailyWeather: state.weather.dailyWeather,
+                        cityName: state.weather.cityName,
+                      )
+                    else
+                      const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      ),
+                    SettingsPage(weatherCode: weatherCode),
+                  ],
+                ),
+                bottomNavigationBar: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
                   ),
-                ),
-                elevation: 0,
-              ),
-              body: IndexedStack(
-                index: _selectedIndex,
-                children: [
-                  CurrentWeatherPage(),
-                  if (state is WeatherLoaded)
-                    DailyForecastPage(
-                      dailyWeather: state.weather.dailyWeather,
-                      cityName: state.weather.cityName,
-                    )
-                  else
-                    const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    ),
-                  SettingsPage(weatherCode: weatherCode),
-                ],
-              ),
-              bottomNavigationBar: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                ),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  child: GNav(
-                    color: Colors.white.withOpacity(0.7),
-                    activeColor: Colors.white,
-                    tabBackgroundColor: Colors.white.withOpacity(0.1),
-                    gap: 8,
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 16,
+                        horizontal: 20, vertical: 16),
+                    child: GNav(
+                      color: Colors.white.withOpacity(0.7),
+                      activeColor: Colors.white,
+                      tabBackgroundColor: Colors.white.withOpacity(0.1),
+                      gap: 8,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                      tabs: const [
+                        GButton(
+                          icon: Icons.cloud_outlined,
+                          text: 'Current',
+                        ),
+                        GButton(
+                          icon: Icons.calendar_today_outlined,
+                          text: '7 Days',
+                        ),
+                        GButton(
+                          icon: Icons.settings_outlined,
+                          text: 'Settings',
+                        ),
+                      ],
+                      selectedIndex: _selectedIndex,
+                      onTabChange: (index) {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                      },
                     ),
-                    tabs: const [
-                      GButton(
-                        icon: Icons.cloud_outlined,
-                        text: 'Current',
-                      ),
-                      GButton(
-                        icon: Icons.calendar_today_outlined,
-                        text: '7 Days',
-                      ),
-                      GButton(
-                        icon: Icons.settings_outlined,
-                        text: 'Settings',
-                      ),
-                    ],
-                    selectedIndex: _selectedIndex,
-                    onTabChange: (index) {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
                   ),
                 ),
               ),

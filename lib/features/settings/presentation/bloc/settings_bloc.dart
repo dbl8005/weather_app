@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weather_app/features/weather/presentation/bloc/weather_bloc.dart';
 
 part 'settings_event.dart';
 part 'settings_state.dart';
@@ -20,6 +21,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       // Save to shared preferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_unitKey, newUnit == unitsFormat.imperial);
+      // Update weather data
 
       emit(SettingsState(newUnit)); // Update UI
     });

@@ -24,6 +24,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
     on<GetWeather>(
       (event, emit) async {
+        print('GetWeather');
         emit(WeatherLoading());
         try {
           if (useCurrentLocation) {

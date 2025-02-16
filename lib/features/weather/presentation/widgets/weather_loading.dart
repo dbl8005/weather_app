@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class WeatherLoading extends StatelessWidget {
   @override
@@ -18,10 +19,8 @@ class WeatherLoading extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/images/loading.gif',
-              width: 100,
-              height: 100,
+            SpinKitCubeGrid(
+              size: 50,
             ),
             const SizedBox(height: 16),
             Text(
